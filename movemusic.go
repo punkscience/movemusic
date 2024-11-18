@@ -64,7 +64,7 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 	}
 
 	if track == "" {
-		track = "Unknown"
+		track = strings.TrimSuffix(filepath.Base(sourceFileFullPath), ext)
 	}
 
 	if trackNumber == 0 {
@@ -72,12 +72,7 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 	}
 
 	// Build a name
-	var newName string
-	if useFolders {
-		newName = makeFileNameFolders(artist, album, track, trackNumber, ext)
-	} else {
-		newName = makeFileName(artist, album, track, trackNumber, ext)
-	}
+	newName := makeFileName(artist, album, track, trackNumber, ext, useFolders)
 
 	// There is a chance this goes off the rails if the tag data was larger than expected
 	// and windows has filename limitations to contend with, so let's correct that.
@@ -121,28 +116,27 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 	return destFileFullPath, nil
 }
 
-func makeFileNameFolders(artist string, album string, track string, trackNumber int, ext string) string {
+func makeFileName(artist string, album string, track string, trackNumber int, ext string, useFolders bool) string {
 	// Remove the invalid characters from the artist, album and track
 	artist = cleanup(artist)
 	album = cleanup(album)
 	track = cleanup(track)
 
-	newName := filepath.Join(artist, album)
+	// Build the new name
+	var newName string
+
+	if useFolders {
+		// Build the folder name
+		newName = filepath.Join(artist, album)
+		newName = filepath.Join(newName, fmt.Sprintf("%02d - %s%s", trackNumber, track, ext))
+	} else {
+		// Build the folder name
+		newName = fmt.Sprintf("%s - %s - %02d - %s%s", artist, album, trackNumber, track, ext)
+	}
+
+	newName = filepath.Join(newName, album)
 
 	// Build the file name
-	newName += fmt.Sprintf("%02d - %s%s", trackNumber, track, ext)
-
-	return newName
-}
-
-func makeFileName(artist string, album string, track string, trackNumber int, ext string) string {
-	// Remove the invalid characters from the artist, album and track
-	artist = cleanup(artist)
-	album = cleanup(album)
-	track = cleanup(track)
-
-	// Build the file name
-	newName := fmt.Sprintf("%s - %s - %02d - %s%s", artist, album, trackNumber, track, ext)
 
 	return newName
 }
