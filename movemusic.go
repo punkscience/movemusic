@@ -131,10 +131,7 @@ func makeFileName(artist string, album string, track string, trackNumber int, ex
 		newName = fmt.Sprintf("%s - %s - %02d - %s%s", artist, album, trackNumber, track, ext)
 	}
 
-	newName = filepath.Join(newName, album)
-
 	// Build the file name
-
 	return newName
 }
 
