@@ -7,10 +7,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	"errors"
+
 	"github.com/dhowden/tag"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
+
+var ErrFileExists = errors.New("file already exists")
 
 func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool) (string, error) {
 
@@ -79,7 +83,7 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 
 	// Check if the destination file exists
 	if _, err := os.Stat(destFileFullPath); err == nil {
-		return "", fmt.Errorf("destination file already exists")
+		return "", ErrFileExists
 	}
 
 	// Copy the file
