@@ -3,6 +3,7 @@ package movemusic
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -76,6 +77,13 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 		newName = makeFileNameFolders(artist, album, track, trackNumber, ext)
 	} else {
 		newName = makeFileName(artist, album, track, trackNumber, ext)
+	}
+
+	// There is a chance this goes off the rails if the tag data was larger than expected
+	// and windows has filename limitations to contend with, so let's correct that.
+	if len(newName) > 255 {
+		log.Println("Filename too long, using the original.")
+		newName = filepath.Base(sourceFileFullPath)
 	}
 
 	// Build the destination file path
