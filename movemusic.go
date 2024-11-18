@@ -89,6 +89,12 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 	}
 	defer sourceFile.Close()
 
+	// Make sure the destination folder is created
+	err = os.MkdirAll(filepath.Dir(destFileFullPath), os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("error creating the destination folder: %v", err)
+	}
+
 	destFile, err := os.Create(destFileFullPath)
 	if err != nil {
 		return "", fmt.Errorf("error creating the destination file: %v", err)
