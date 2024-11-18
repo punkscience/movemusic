@@ -42,33 +42,30 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 		return "", fmt.Errorf("unsupported file type")
 	}
 
-	// Open the spirce file
-	m, err := tag.ReadFrom(file)
-	if err != nil {
-		return "", fmt.Errorf("error reading the file")
-	}
-
-	// Get the artist, album, track and track number
-	artist := m.Artist()
-	album := m.Album()
-	track := m.Title()
-	trackNumber, _ := m.Track()
-
 	// Check if the artist, album, track and track number are empty
-	if artist == "" {
-		artist = "Unknown"
-	}
+	artist := "Unknown"
+	album := "Unknown"
+	track := strings.TrimSuffix(filepath.Base(sourceFileFullPath), ext)
+	trackNumber := 1
 
-	if album == "" {
-		album = "Unknown"
-	}
+	// Open the source file
+	m, err := tag.ReadFrom(file)
+	if err == nil {
+		// Get the artist, album, track and track number
 
-	if track == "" {
-		track = strings.TrimSuffix(filepath.Base(sourceFileFullPath), ext)
-	}
+		if m.Artist() != "" {
+			artist = m.Artist()
+		}
 
-	if trackNumber == 0 {
-		trackNumber = 1
+		if m.Album() != "" {
+			album = m.Album()
+		}
+
+		if m.Title() != "" {
+			track = m.Title()
+		}
+
+		trackNumber, _ = m.Track()
 	}
 
 	// Build a name
