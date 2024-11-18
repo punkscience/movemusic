@@ -83,7 +83,7 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 
 	// Check if the destination file exists
 	if _, err := os.Stat(destFileFullPath); err == nil {
-		return "", ErrFileExists
+		return destFileFullPath, ErrFileExists
 	}
 
 	// Copy the file
