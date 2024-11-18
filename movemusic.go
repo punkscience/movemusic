@@ -2,6 +2,7 @@ package movemusic
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,7 +12,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-func MoveMusic(sourceFileFullPath string, destFolderPath string, useFolders bool) (string, error) {
+func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool) (string, error) {
 
 	// Check if the source file exists
 	if _, err := os.Stat(sourceFileFullPath); os.IsNotExist(err) {
@@ -81,10 +82,22 @@ func MoveMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 		return "", fmt.Errorf("destination file already exists")
 	}
 
-	// Move the file
-	err = os.Rename(sourceFileFullPath, destFileFullPath)
+	// Copy the file
+	sourceFile, err := os.Open(sourceFileFullPath)
 	if err != nil {
-		return "", fmt.Errorf("error moving the file")
+		return "", fmt.Errorf("error opening the source file: %v", err)
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(destFileFullPath)
+	if err != nil {
+		return "", fmt.Errorf("error creating the destination file: %v", err)
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return "", fmt.Errorf("error copying the file: %v", err)
 	}
 
 	return destFileFullPath, nil
