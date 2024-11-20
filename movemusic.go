@@ -151,10 +151,11 @@ func cleanup(s string) string {
 	s = strings.Replace(s, "|", "-", -1)
 	s = strings.Replace(s, "  ", " ", -1)
 
-	s = strings.Replace(s, "feat.", "ft.", -1)
-	s = strings.Replace(s, "Feat.", "ft.", -1)
-	s = strings.Replace(s, "Featuring", "ft.", -1)
-	s = strings.Replace(s, "&", " and ", -1)
+	s = strings.Replace(s, "feat.", "ft", -1)
+	s = strings.Replace(s, "Feat.", "ft", -1)
+	s = strings.Replace(s, "Feat", "ft", -1)
+	s = strings.Replace(s, "Featuring", "ft", -1)
+	s = strings.Replace(s, "&", "and", -1)
 
 	// Remove any special characters
 	s = strings.Map(func(r rune) rune {
