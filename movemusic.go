@@ -75,7 +75,7 @@ func CopyMusic(sourceFileFullPath string, destFolderPath string, useFolders bool
 	// and windows has filename limitations to contend with, so let's correct that.
 	if len(newName) > 255 {
 		log.Println("Filename too long, using the original.")
-		newName = filepath.Base(sourceFileFullPath) + ext
+		newName = filepath.Base(sourceFileFullPath)
 	}
 
 	// Build the destination file path
